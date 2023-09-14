@@ -1,0 +1,17 @@
+---
+- name: install
+  ansible.builtin.apt:
+    name: "{{ updatedb_dependencies }}"
+    state: "{{ apt_install_state | default('latest') }}"
+    update_cache: true
+    cache_valid_time: "{{ apt_update_cache_valid_time | default(3600) }}"
+
+- name: configure /etc/updatedb.conf
+  ansible.builtin.template:
+    src: updatedb.conf.j2
+    dest: /etc/updatedb.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: true
+  notify: update updatedb
